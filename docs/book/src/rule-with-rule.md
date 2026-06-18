@@ -18,16 +18,18 @@ You can declare a rule-typed parameter using the form `type: rule.<rule-name>`. 
 
 ### Capturing components
 
-Inside the `components/` directory, `use: rule.component` is called with `id: comp` attached. The `component` rule captures each subdirectory using the regex `'^(?<name>.+)$'` and groups the records under `id: component`. Adding `id: comp` makes the collected results accessible via the reference path `${use.comp.dir.component}`.
+Inside the `components/` directory, `use: rule.component` is called with `id: comp` attached. The `component` rule captures each subdirectory using the regex `'^(?<name>.+)$'` and groups the records under `id: component`. Adding `id: comp` makes the collected results accessible via the reference path `${dir.components_root.dir.comp.dir.component}`.
 
-### Passing a rule to doc_for
+The `dir: components` entry is given `id: components_root`. This allows the entire `components/` directory record — including the inner `comp` captures — to be referenced as a single object.
 
-Inside the `docs/` directory, `for` iterates over `${use.comp.dir.component}`. In each iteration, one captured component record is extracted as `value.component_entry` and passed to `use: rule.doc_for` via `value: ${value.component_entry}` in `with:`.
+### Passing components_root to the docs rule
 
-The `doc_for` rule declares a parameter `component_entry` of `type: rule.component`. In the rule body, `${with.component_entry.regex.name}` references the named capture `name` from the passed record and requires the file `<name>.md`.
+When the `root` rule calls `use: rule.docs`, it passes `components_root` via `with:`. The value is `${dir.components_root}` and its type is declared as `type: rule.root.dir.components_root`. This type declaration means "the shape of the `components_root` capture inside the `root` rule."
+
+The `docs` rule iterates over the received `components_root` using `for`. The iteration target is `${with.components_root.dir.comp.dir.component}`, and each element is bound as `component_entry`. Inside the rule body, `${value.component_entry.regex.name}` references the named capture `name` and requires the file `<name>.md`.
 
 For example, if `components/` contains `button/` and `input/`, then both `docs/button.md` and `docs/input.md` become mandatory.
 
 ### Summary
 
-This mechanism allows "the structure captured on the source side (components/) to be passed to another rule (doc_for) and used to validate a different location (docs/)." It is an effective pattern when you want to express cross-directory correspondence relationships in a type-safe manner.
+This pattern passes the entire structure captured under `components/` to the `docs` rule and uses it to validate the `docs/` directory. Keeping `for` inside the rule rather than at the call site encapsulates the iteration logic within `docs`. It is an effective pattern when you want to express cross-directory correspondence relationships in a type-safe manner.
