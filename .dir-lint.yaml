@@ -11,11 +11,15 @@ rules:
   # Enumerate the root with deny-by-default (dirs first, then files).
   - rule: root
     ::
-      # Enforce the convention that dir-lint-* crates must have src/ + Cargo.toml, and *_tests/ dirs paired with <base>.rs.
-      - dir:
-          regex: '^dir-lint-.+$'
+      # Single-package layout: src/ holds the bin crate's modules, tests/ holds integration tests.
+      # Both follow the `<base>_tests` dir / `<base>.rs` sibling convention via rule.dir-lint-src.
+      - dir: src
         ::
-          - use: rule.dir-lint-crate
+          - use: rule.dir-lint-src
+      - dir: tests
+        optional: true
+        ::
+          - use: rule.dir-lint-src
       # tutorials / rule-tests are not inspected for their contents (/* explicitly skips the interior).
       - dir: tutorials/*
       - dir: rule-tests/*
@@ -57,19 +61,6 @@ rules:
       - file: LICENSE
       - file: prek.toml
       - file: README.md
-
-  # dir-lint-* crate root: Cargo.toml and src/ are required.
-  # tests/ (integration tests) is optional. Content inspection under src/ and tests/ is delegated to rule.dir-lint-src.
-  - rule: dir-lint-crate
-    ::
-      - dir: src
-        ::
-          - use: rule.dir-lint-src
-      - dir: tests
-        optional: true
-        ::
-          - use: rule.dir-lint-src
-      - file: Cargo.toml
 
   # Convention for recursively inspecting src/:
   # - If a `<base>_tests` directory exists, a sibling `<base>.rs` must be present.

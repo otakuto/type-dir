@@ -1,26 +1,19 @@
-[workspace]
-resolver = "3"
-members = ["dir-lint-*"]
-
-[workspace.package]
+[package]
+name = "dir-lint"
 edition = "2024"
 rust-version = "1.85"
-version = "0.0.0"
-publish = false
+version = "0.1.0"
+publish = true
 
 license = "MIT"
 authors = ["Tact Yoshida"]
 repository = "https://github.com/otakuto/dir-lint"
 
-[workspace.dependencies]
-dir-lint-error = { path = "dir-lint-error" }
-dir-lint-yaml = { path = "dir-lint-yaml" }
-dir-lint-expr = { path = "dir-lint-expr" }
-dir-lint-runtime = { path = "dir-lint-runtime" }
-dir-lint-runtime-impl = { path = "dir-lint-runtime-impl" }
-dir-lint-walk = { path = "dir-lint-walk" }
-dir-lint-walk-impl = { path = "dir-lint-walk-impl" }
+[[bin]]
+name = "dir-lint"
+path = "src/main.rs"
 
+[dependencies]
 anyhow = "1.0.102"
 thiserror = "2.0.18"
 clap = { version = "4.6.1", features = ["derive"] }
@@ -35,4 +28,6 @@ ignore = "0.4.26"
 regex = "1.12.4"
 rayon = "1.12.0"
 indoc = "2.0.7"
+
+[dev-dependencies]
 assert_cmd = "2.2.2"

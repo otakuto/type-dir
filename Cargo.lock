@@ -194,97 +194,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6184e33543162437515c2e2b48714794e37845ec9851711914eec9d308f6ebe8"
 
 [[package]]
-name = "dir-lint-cli"
-version = "0.0.0"
+name = "dir-lint"
+version = "0.1.0"
 dependencies = [
  "anyhow",
  "assert_cmd",
  "clap",
  "codespan-reporting",
- "dir-lint-error",
- "dir-lint-expr",
- "dir-lint-runtime",
- "dir-lint-runtime-impl",
- "dir-lint-walk",
- "dir-lint-walk-impl",
- "dir-lint-yaml",
- "serde_json",
-]
-
-[[package]]
-name = "dir-lint-error"
-version = "0.0.0"
-dependencies = [
- "thiserror",
-]
-
-[[package]]
-name = "dir-lint-expr"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "dir-lint-error",
- "dir-lint-yaml",
- "indexmap",
- "indoc",
- "serde",
- "serde_yaml",
-]
-
-[[package]]
-name = "dir-lint-runtime"
-version = "0.0.0"
-dependencies = [
- "dir-lint-error",
- "dir-lint-expr",
- "dir-lint-walk",
-]
-
-[[package]]
-name = "dir-lint-runtime-impl"
-version = "0.0.0"
-dependencies = [
- "dir-lint-error",
- "dir-lint-expr",
- "dir-lint-runtime",
- "dir-lint-walk",
- "dir-lint-yaml",
- "indexmap",
- "indoc",
- "rayon",
- "regex",
- "serde_yaml",
-]
-
-[[package]]
-name = "dir-lint-walk"
-version = "0.0.0"
-dependencies = [
- "anyhow",
  "ignore",
-]
-
-[[package]]
-name = "dir-lint-walk-impl"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "dir-lint-walk",
- "ignore",
-]
-
-[[package]]
-name = "dir-lint-yaml"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "dir-lint-error",
  "indexmap",
  "indoc",
  "marked-yaml",
+ "rayon",
+ "regex",
  "serde",
+ "serde_json",
  "serde_path_to_error",
  "serde_yaml",
+ "thiserror",
 ]
 
 [[package]]
