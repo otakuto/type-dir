@@ -9,3 +9,5 @@ rules:
       - file: required.txt
       - file: extra.txt
         optional: true
+      - file: opt.txt
+        optional: true
