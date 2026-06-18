@@ -1,0 +1,69 @@
+name: Deploy mdBook to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Rustツールチェーンを導入する
+      - uses: dtolnay/rust-toolchain@stable
+
+      # tree コマンドを導入する
+      - name: Install tree
+        run: sudo apt-get update && sudo apt-get install -y tree
+
+      # type-dir バイナリをビルドしてインストールする
+      - name: Install type-dir
+        run: cargo install --path .
+
+      # mdbook と mdbook-cmdrun をプレビルドバイナリで導入する
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: mdbook,mdbook-cmdrun
+
+      # 英語版 book をビルドする
+      - name: Build English book
+        run: mdbook build docs/book
+
+      # 日本語版 book をビルドする
+      - name: Build Japanese book
+        run: mdbook build docs/book-ja
+
+      # 英語をルート、日本語を /ja に配置してサイトを組み立てる
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -r docs/book/book/. _site/
+          mkdir -p _site/ja
+          cp -r docs/book-ja/book/. _site/ja/
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
